@@ -2,20 +2,31 @@ require([
   "esri/Map",
   "esri/views/MapView",
   "esri/layers/FeatureLayer",
+  "esri/views/layers/LayerView",
   "esri/widgets/Home",
   "esri/widgets/Zoom",
   "esri/widgets/Editor",
-], (Map, MapView, FeatureLayer, Home, Zoom, Editor) => {
+  "esri/layers/support/FeatureEffect"
+], (
+  Map,
+  MapView,
+  FeatureLayer,
+  LayerView,
+  Home,
+  Zoom,
+  Editor,
+  FeatureEffect
+) => {
   //*********************************
-  // CREATE LAYER VARIABLES
+  // CREATE LAYER VARIABLES & SYMBOLOGY RENDERERS
   //*********************************
   // trails layer
   const trails = new FeatureLayer({
     portalItem: {
-      id: "f40494fb4e5d4a89991020c08a2b86e3",
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
     },
     title: "Trails",
-    definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'",
+    definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
   });
 
   // define renderer for boundary symbology
@@ -24,18 +35,18 @@ require([
     symbol: {
       type: "simple-fill",
       color: [144, 238, 144, 0.5],
-      outline: { width: 2, color: "orange" },
-    },
+      outline: { width: 2, color: "orange" }
+    }
   };
 
   // park polygon layer
   const boundary = new FeatureLayer({
     portalItem: {
-      id: "3b9e47ebad5742e98ca96a0a37e757d5",
+      id: "3b9e47ebad5742e98ca96a0a37e757d5"
     },
     title: "Park Boundary",
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'",
-    renderer: boundRenderer,
+    renderer: boundRenderer
   });
 
   //*********************************
@@ -49,7 +60,7 @@ require([
     //       id: "4f2e99ba65e34bb8af49733d9778fb8e",
     //     },
     basemap: "gray-vector",
-    layers: [boundary, trails],
+    layers: [boundary, trails]
   });
 
   // mapView
@@ -58,7 +69,7 @@ require([
     container: "viewDiv",
     zoom: 14,
     // scale: 9000,
-    center: [-84.29, 30.5305],
+    center: [-84.29, 30.5305]
     // CONSIDER SETTING EXTENT OR CONSTRAINTS
     // ensures when going fullscreen left corners of extent & view container align
     //resizeAlign: "top-left",
@@ -88,4 +99,61 @@ require([
   view.ui.add(editor, "top-left");
   view.ui.add(home, "top-right");
   view.ui.add(zoom, "top-right");
+
+  //*********************************
+  //EVENT LISTENERS FOR RADIO BUTTONS
+  //*********************************
+
+  // create variables for radio buttons
+  const sharedBtn = document.getElementById("shared");
+  const hikeBtn = document.getElementById("hike");
+  const bikeBtn = document.getElementById("bike");
+
+  // create variables for each trail type filter
+  // const sharedFilter = new FeatureFilter({
+  //   where: "CATEGORY='Shared-Use Equestrian'"
+  // });
+  // const hikeFilter = new FeatureFilter({
+  //   where: "CATEGORY='Hiking Trail'"
+  // });
+  // const bikeFilter = new FeatureFilter({
+  //   where: "CATEGORY='Mtn Bike Trail'"
+  // });
+  const sharedFilter = {
+    where: "CATEGORY='Shared-Use Equestrian'"
+  };
+  const hikeFilter = {
+    where: "CATEGORY='Hiking Trail'"
+  };
+  const bikeFilter = {
+    where: "CATEGORY='Mtn Bike Trail'"
+  };
+
+  let trailsLayerView;
+
+  view.whenLayerView(trails).then((layerView) => {
+    trailsLayerView = layerView;
+  });
+
+  // event listeners
+  sharedBtn.addEventListener("click", filterTrails(sharedBtn, sharedFilter));
+  hikeBtn.addEventListener("click", filterTrails(hikeBtn, hikeFilter));
+  bikeBtn.addEventListener("click", filterTrails(bikeBtn, bikeFilter));
+
+  //*********************************
+  //           FUNCTIONS
+  //*********************************
+
+  // make selected trail type symbol wider
+  function filterTrails(radioButton, featureFilter) {
+    if (radioButton.checked) {
+      trailsLayerView.featureEffect = new FeatureEffect({
+        filter: featureFilter,
+        // includedEffect: "drop-shadow(3px, 3px, 3px, black)",
+        excludedEffect: "opacity(75%)"
+      });
+      console.log("worked");
+    }
+    console.log(radioButton.value);
+  }
 });
