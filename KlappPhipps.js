@@ -3,11 +3,13 @@ require([
   "esri/views/MapView",
   "esri/layers/FeatureLayer",
   "esri/widgets/Home",
-], (Map, MapView, FeatureLayer, Home) => {
+  "esri/widgets/Zoom",
+  "esri/widgets/Editor",
+], (Map, MapView, FeatureLayer, Home, Zoom, Editor) => {
   //*********************************
-  // CREATE LAYERS FROM PORTAL ITEMS
+  // CREATE LAYER VARIABLES
   //*********************************
-  // add trails layer
+  // trails layer
   const trails = new FeatureLayer({
     portalItem: {
       id: "f40494fb4e5d4a89991020c08a2b86e3",
@@ -26,7 +28,7 @@ require([
     },
   };
 
-  // add park polygon layer
+  // park polygon layer
   const boundary = new FeatureLayer({
     portalItem: {
       id: "3b9e47ebad5742e98ca96a0a37e757d5",
@@ -39,8 +41,7 @@ require([
   //*********************************
   // CREATE MAP OBJECTS
   //*********************************
-
-  // map object
+  // map
   const map = new Map({
     // use this for a custom basemap
     // basemap: {
@@ -48,15 +49,15 @@ require([
     //       id: "4f2e99ba65e34bb8af49733d9778fb8e",
     //     },
     basemap: "gray-vector",
-    layers: [trails, boundary],
+    layers: [boundary, trails],
   });
 
-  // mapView object
+  // mapView
   const view = new MapView({
     map: map,
     container: "viewDiv",
-    //zoom: 14,
-    scale: 9000,
+    zoom: 14,
+    // scale: 9000,
     center: [-84.29, 30.5305],
     // CONSIDER SETTING EXTENT OR CONSTRAINTS
     // ensures when going fullscreen left corners of extent & view container align
@@ -68,21 +69,23 @@ require([
   //*********************************
 
   //*********************************
-  // CREATE WIDGETS
+  // CREATE WIDGET VARIABLES
+  //*********************************
+  // const titleDiv = document.getElementById("titleDiv");
+  const editor = new Editor({ view: view });
+  const home = new Home({ view: view });
+  const zoom = new Zoom({ view: view });
+
+  //*********************************
+  // DEFINE EDITOR FUNCTIONALITY
   //*********************************
 
   //*********************************
   // ADD WIDGETS TO USER INTERFACE
   //*********************************
   view.ui.empty("top-left");
-  // home button
-  view.ui.add(
-    new Home({
-      view: view,
-    }),
-    "top-right"
-  );
-
-  const titleDiv = document.getElementById("titleDiv");
-  view.ui.add(titleDiv, "top-left");
+  // view.ui.add(titleDiv, "top-left");
+  view.ui.add(editor, "top-left");
+  view.ui.add(home, "top-right");
+  view.ui.add(zoom, "top-right");
 });

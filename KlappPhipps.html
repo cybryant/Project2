@@ -5,7 +5,7 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <title>Elinor Klapp-Phipps Park</title>
+    <title>Elinor Klapp-Phipps Park Trails</title>
     <link rel="stylesheet" type="text/css" href="KlappPhipps.css" />
     <link
       rel="stylesheet"
@@ -15,8 +15,24 @@
   </head>
 
   <body>
+    <div id="titleDiv">Elinor Klapp-Phipps Park Trails</div>
+
+    <!-- set up radio buttons -->
+    <div id="filterDiv">
+      <!-- shared-use trails -->
+      <input type="radio" id="shared" name="trailTypes" value="shared" />
+      <label for="shared">shared</label>
+      <!-- hiking trails -->
+      <input type="radio" id="hike" name="trailTypes" value="hike" />
+      <label for="hike">hike</label>
+      <!-- biking trails -->
+      <input type="radio" id="bike" name="trailTypes" value="bike" />
+      <label for="bike">bike</label>
+    </div>
+
+    <!-- set up main app area -->
     <div id="viewDiv"></div>
-    <div id="titleDiv" class="esri-widget">Elinor Klapp-Phipps Park</div>
+    <!-- <div id="titleDiv" class="esri-widget">Elinor Klapp-Phipps Park</div> -->
   </body>
 
   <script src="KlappPhipps.js"></script>
