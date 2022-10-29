@@ -18,7 +18,7 @@ require([
   FeatureEffect
 ) => {
   //*********************************
-  // CREATE LAYER VARIABLES & SYMBOLOGY RENDERERS
+  // LAYER VARIABLES & SYMBOLOGY RENDERERS
   //*********************************
   // trails layer
   const trails = new FeatureLayer({
@@ -50,7 +50,7 @@ require([
   });
 
   //*********************************
-  // CREATE MAP OBJECTS
+  // REQUIRED MAP OBJECTS
   //*********************************
   // map
   const map = new Map({
@@ -83,7 +83,7 @@ require([
   // CREATE WIDGET VARIABLES
   //*********************************
   // const titleDiv = document.getElementById("titleDiv");
-  const editor = new Editor({ view: view });
+  // const editor = new Editor({ view: view });
   const home = new Home({ view: view });
   const zoom = new Zoom({ view: view });
 
@@ -95,24 +95,28 @@ require([
   // ADD WIDGETS TO USER INTERFACE
   //*********************************
   view.ui.empty("top-left");
-  // view.ui.add(titleDiv, "top-left");
-  view.ui.add(editor, "top-left");
+  // view.ui.add(editor, "top-left");
   view.ui.add(home, "top-right");
   view.ui.add(zoom, "top-right");
 
   //*********************************
+  // CREATE LAYERVIEW OBJECT TO FILTER
+  //*********************************
+  /* 'layerView' versus 'layer' allows filtering on the client side rather than the server side, so no callback is needed & performance is faster */
+
+  // variable to hold the layerView
+  let trailsLayerView;
+
+  // once layerView loads, assign to the variable & return it
+  view.whenLayerView(trails).then((layerView) => {
+    trailsLayerView = layerView;
+    return trailsLayerView;
+  });
+
+  //*********************************
   // FILTERS FOR TRAIL TYPES
   //*********************************
-  // create variables for each trail type filter
-  // const sharedFilter = new FeatureFilter({
-  //   where: "CATEGORY='Shared-Use Equestrian'"
-  // });
-  // const hikeFilter = new FeatureFilter({
-  //   where: "CATEGORY='Hiking Trail'"
-  // });
-  // const bikeFilter = new FeatureFilter({
-  //   where: "CATEGORY='Mtn Bike Trail'"
-  // });
+  // variables for each trail type filter
   const sharedFilter = {
     where: "CATEGORY='Shared-Use Equestrian'"
   };
@@ -123,17 +127,11 @@ require([
     where: "CATEGORY='Mtn Bike Trail'"
   };
 
-  let trailsLayerView;
-
-  view.whenLayerView(trails).then((layerView) => {
-    trailsLayerView = layerView;
-  });
-
   //*********************************
   // EVENT LISTENER FOR RADIO BUTTONS
   //*********************************
-  document.getElementById("filterDiv").addEventListener("change", (e) => {
-    let target = e.target;
+  document.getElementById("filterDiv").addEventListener("change", (event) => {
+    let target = event.target;
     switch (target.id) {
       case "shared":
         filterTrails(sharedFilter);
@@ -167,13 +165,11 @@ require([
 
   // make selected trail type symbol wider
   // function filterTrails(radioButton, featureFilter) {
-  function filterTrails(radioButton) {
-    // if (radioButton.checked) {
-    //   trailsLayerView.featureEffect = new FeatureEffect({
-    //     filter: featureFilter,
-    //     // includedEffect: "drop-shadow(3px, 3px, 3px, black)",
-    //     excludedEffect: "opacity(75%)"
-    // });
-    console.log(radioButton + " function worked");
+  function filterTrails(featureFilter) {
+    trailsLayerView.featureEffect = new FeatureEffect({
+      filter: featureFilter,
+      includedEffect: "drop-shadow(3px, 3px, 3px, black)"
+      // excludedEffect: "opacity(95%)"
+    });
   }
 });
