@@ -101,14 +101,8 @@ require([
   view.ui.add(zoom, "top-right");
 
   //*********************************
-  //EVENT LISTENERS FOR RADIO BUTTONS
+  // FILTERS FOR TRAIL TYPES
   //*********************************
-
-  // create variables for radio buttons
-  const sharedBtn = document.getElementById("shared");
-  const hikeBtn = document.getElementById("hike");
-  const bikeBtn = document.getElementById("bike");
-
   // create variables for each trail type filter
   // const sharedFilter = new FeatureFilter({
   //   where: "CATEGORY='Shared-Use Equestrian'"
@@ -135,25 +129,51 @@ require([
     trailsLayerView = layerView;
   });
 
-  // event listeners
-  sharedBtn.addEventListener("click", filterTrails(sharedBtn, sharedFilter));
-  hikeBtn.addEventListener("click", filterTrails(hikeBtn, hikeFilter));
-  bikeBtn.addEventListener("click", filterTrails(bikeBtn, bikeFilter));
+  //*********************************
+  // EVENT LISTENER FOR RADIO BUTTONS
+  //*********************************
+  document.getElementById("filterDiv").addEventListener("change", (e) => {
+    let target = e.target;
+    switch (target.id) {
+      case "shared":
+        filterTrails(sharedFilter);
+        break;
+      case "hike":
+        filterTrails(hikeFilter);
+        break;
+      case "bike":
+        filterTrails(bikeFilter);
+        break;
+    }
+  });
+
+  //*********************************
+  //DRAFT (REFERENCE) EVENT LISTENERS FOR RADIO BUTTONS
+  //*********************************
+
+  // create variables for radio buttons
+  // const sharedBtn = document.getElementById("shared");
+  // const hikeBtn = document.getElementById("hike");
+  // const bikeBtn = document.getElementById("bike");
+
+  // // event listeners
+  // sharedBtn.addEventListener("click", filterTrails(sharedBtn, sharedFilter));
+  // hikeBtn.addEventListener("click", filterTrails(hikeBtn, hikeFilter));
+  // bikeBtn.addEventListener("click", filterTrails(bikeBtn, bikeFilter));
 
   //*********************************
   //           FUNCTIONS
   //*********************************
 
   // make selected trail type symbol wider
-  function filterTrails(radioButton, featureFilter) {
-    if (radioButton.checked) {
-      trailsLayerView.featureEffect = new FeatureEffect({
-        filter: featureFilter,
-        // includedEffect: "drop-shadow(3px, 3px, 3px, black)",
-        excludedEffect: "opacity(75%)"
-      });
-      console.log("worked");
-    }
-    console.log(radioButton.value);
+  // function filterTrails(radioButton, featureFilter) {
+  function filterTrails(radioButton) {
+    // if (radioButton.checked) {
+    //   trailsLayerView.featureEffect = new FeatureEffect({
+    //     filter: featureFilter,
+    //     // includedEffect: "drop-shadow(3px, 3px, 3px, black)",
+    //     excludedEffect: "opacity(75%)"
+    // });
+    console.log(radioButton + " function worked");
   }
 });
