@@ -35,7 +35,7 @@ require([
   // trails layer
   const trails = new FeatureLayer({
     portalItem: {
-      id: "f40494fb4e5d4a89991020c08a2b86e3"
+      id: "31594b757eae4be2a702103017b9c603"
     },
     title: "Trails",
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
