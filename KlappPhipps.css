@@ -35,7 +35,7 @@ body {
   /* overflow: hidden; */
 }
 
-.esri-editor__update-features-action-buttons {
+/* .esri-editor__update-features-action-buttons {
   visibility: hidden;
 }
 .esri-editor__update-features-action-buttons--button {
@@ -61,3 +61,32 @@ body {
 .esri-widget__heading {
   visibility: hidden;
 }
+
+.esri-ui-bottom-right .esri-expand__content {
+  right: 75% !important;
+} */
+
+/* Adjusting the Editor layout to hide unnecesary fields*/
+div.esri-editor__scroller > div:first-child h5 {
+  display: none;
+}
+
+div.esri-editor__panel-toolbar {
+  display: none;
+}
+
+div.esri-item-list__filter-container--sticky {
+  display: none;
+}
+
+div.esri-editor__update-features-action-buttons {
+  display: none;
+}
+
+/* div.esri-editor__panel-content__section:first-of-type {
+  display: none;
+}
+
+div.esri-editor__scroller.esri-editor__panel-content {
+  display: flex;
+} */

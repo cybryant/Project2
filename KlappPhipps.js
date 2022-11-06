@@ -81,13 +81,31 @@ require([
     visible: false
   });
 
+  const notesPopupTemplate = {
+    // autocasts as new PopupTemplate()
+    title: "Trail Notes",
+    content: [
+      {
+        type: "fields",
+        fieldInfos: [
+          {
+            fieldName: "Note",
+            label: "Note"
+          }
+        ]
+      }
+    ]
+  };
+
   // notes layer (user editable)
   const notes = new FeatureLayer({
     portalItem: {
-      id: "a30cfb26c55246e5a3193b02d0134de3"
+      id: "e1a2bc5263e64bbba407e356f818e55a"
     },
     title: "Trail Notes",
-    defaultPopupTemplateEnabled: true
+    popupTemplate: notesPopupTemplate,
+    popupEnabled: true
+    // defaultPopupTemplateEnabled: true
   });
 
   //*********************************
@@ -129,8 +147,8 @@ require([
         layer: notes,
         formTemplate: {
           elements: [
-            { type: "field", fieldName: "noteType", label: "Note Type" },
-            { type: "field", fieldName: "trailNotes", label: "Trail Notes" }
+            // { type: "field", fieldName: "noteType", label: "Note Type" },
+            { type: "field", fieldName: "Note", label: "Note" }
           ]
         }
       };
