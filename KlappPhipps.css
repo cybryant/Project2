@@ -17,7 +17,7 @@ body {
 }
 
 #filterDiv {
-  height: 3%;
+  height: 4%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -28,11 +28,18 @@ body {
 #viewDiv {
   padding: 0;
   margin: 0;
-  height: 93%;
+  height: 92%;
   width: 100%;
   flex: 1 1 auto;
   order: 1;
   /* overflow: hidden; */
+}
+
+#infoPanel_controls_content {
+  display: flex;
+  /* width: 50%; */
+  padding: 5;
+  background-color: whitesmoke;
 }
 
 /* .esri-editor__update-features-action-buttons {

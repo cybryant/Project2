@@ -70,7 +70,8 @@ require([
     title: "Park Boundary",
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'",
     renderer: boundRenderer,
-    popupEnabled: false
+    popupEnabled: false,
+    listMode: "hide"
   });
 
   const contours = new FeatureLayer({
@@ -104,8 +105,8 @@ require([
     },
     title: "Trail Notes",
     popupTemplate: notesPopupTemplate,
-    popupEnabled: true
-    // defaultPopupTemplateEnabled: true
+    popupEnabled: true,
+    visible: false
   });
 
   //*********************************
@@ -119,7 +120,7 @@ require([
     //       id: "4f2e99ba65e34bb8af49733d9778fb8e",
     //     },
     // basemap: "gray-vector",
-    basemap: "topo",
+    basemap: "topo-vector",
     layers: [trails, boundary, contours, notes]
   });
 
@@ -194,6 +195,22 @@ require([
   });
 
   //*********************************
+  // infoPanel
+  //*********************************
+
+  const parkURL =
+    "<a href='https://www.talgov.com/parks/parks-phipps'>park webpage</a>";
+  const infoText = `Check out the official City of Tallahassee ${parkURL}`;
+
+  infoPanel = new Expand({
+    expandIconClass: "esri-icon-description",
+    expandTooltip: "Add a note",
+    view: view,
+    content: infoText,
+    id: "infoPanel"
+  });
+
+  //*********************************
   // ADD FUNCTIONALITY TO EXPAND Editor WINDOW
   //*********************************
   editExpand = new Expand({
@@ -229,6 +246,7 @@ require([
   view.ui.empty("top-left");
   view.ui.add(home, "top-right");
   //view.ui.add(zoom, "top-right");
+  view.ui.add(infoPanel, "top-left");
   view.ui.add(layersExpand, "top-left");
   // view.ui.add(basemapToggle, "top-right");
   view.ui.add(basemapsExpand, "top-right");
