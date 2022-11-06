@@ -12,7 +12,9 @@ require([
   "esri/layers/support/FeatureEffect",
   "esri/widgets/Expand",
   "esri/widgets/support/SnappingControls",
-  "esri/widgets/LayerList"
+  "esri/widgets/LayerList",
+  "esri/widgets/Track",
+  "esri/widgets/BasemapGallery"
 ], (
   esriConfig,
   Map,
@@ -27,7 +29,9 @@ require([
   FeatureEffect,
   Expand,
   SnappingControls,
-  LayerList
+  LayerList,
+  Track,
+  BasemapGallery
 ) => {
   //*********************************
   // API KEY NEEDED FOR LOCATE BUTTON FUNCTIONALITY
@@ -41,7 +45,7 @@ require([
   // trails layer
   const trails = new FeatureLayer({
     portalItem: {
-      id: "31594b757eae4be2a702103017b9c603"
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
     },
     title: "Trails",
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
@@ -52,8 +56,9 @@ require([
     type: "simple",
     symbol: {
       type: "simple-fill",
-      color: [144, 238, 144, 0.5],
-      outline: { width: 2, color: "orange" }
+      // color: [144, 238, 144, 0.95],
+      color: null,
+      outline: { width: 3, color: "orange" }
     }
   };
 
@@ -66,6 +71,14 @@ require([
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'",
     renderer: boundRenderer,
     popupEnabled: false
+  });
+
+  const contours = new FeatureLayer({
+    portalItem: {
+      id: "07dfaf9dd2fd484ab4ed54bbbcf55a9f"
+    },
+    title: "Contours",
+    visible: false
   });
 
   // notes layer (user editable)
@@ -87,8 +100,9 @@ require([
     //     portalItem: {
     //       id: "4f2e99ba65e34bb8af49733d9778fb8e",
     //     },
-    basemap: "gray-vector",
-    layers: [trails, boundary, notes]
+    // basemap: "gray-vector",
+    basemap: "topo",
+    layers: [trails, boundary, contours, notes]
   });
 
   // mapView
@@ -128,9 +142,12 @@ require([
   //*********************************
   const home = new Home({ view: view });
   //const zoom = new Zoom({ view: view });
-  const basemapToggle = new BasemapToggle({
-    view: view,
-    nextBasemap: "streets-vector"
+  // const basemapToggle = new BasemapToggle({
+  //   view: view,
+  //   nextBasemap: "streets-vector"
+  // });
+  const basemapGallery = new BasemapGallery({
+    view: view
   });
   const layerList = new LayerList({
     view: view
@@ -154,8 +171,12 @@ require([
     }
   });
 
+  const track = new Track({
+    view: view
+  });
+
   //*********************************
-  // ADD FUNCTIONALITY TO EXPAND EDITOR WINDOW
+  // ADD FUNCTIONALITY TO EXPAND Editor WINDOW
   //*********************************
   editExpand = new Expand({
     expandIconClass: "esri-icon-plus",
@@ -175,15 +196,27 @@ require([
   });
 
   //*********************************
+  // ADD FUNCTIONALITY TO EXPAND BasemapGallery WIDGET
+  //*********************************
+  basemapsExpand = new Expand({
+    expandIconClass: "esri-icon-basemap",
+    expandTooltip: "Basemaps",
+    view: view,
+    content: basemapGallery
+  });
+
+  //*********************************
   // ADD ALL WIDGETS TO USER INTERFACE
   //*********************************
   view.ui.empty("top-left");
   view.ui.add(home, "top-right");
   //view.ui.add(zoom, "top-right");
   view.ui.add(layersExpand, "top-left");
-  view.ui.add(basemapToggle, "top-right");
+  // view.ui.add(basemapToggle, "top-right");
+  view.ui.add(basemapsExpand, "top-right");
   view.ui.add(editExpand, "bottom-right");
   view.ui.add(locate, "bottom-left");
+  view.ui.add(track, "bottom-left");
 
   //*********************************
   // CREATE 'trails' LAYERVIEW OBJECT TO FILTER BY TRAIL TYPE
