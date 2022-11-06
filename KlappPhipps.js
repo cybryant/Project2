@@ -9,7 +9,10 @@ require([
   "esri/widgets/BasemapToggle",
   "esri/widgets/Editor",
   "esri/widgets/Locate",
-  "esri/layers/support/FeatureEffect"
+  "esri/layers/support/FeatureEffect",
+  "esri/widgets/Expand",
+  "esri/widgets/support/SnappingControls",
+  "esri/widgets/LayerList"
 ], (
   esriConfig,
   Map,
@@ -21,7 +24,10 @@ require([
   BasemapToggle,
   Editor,
   Locate,
-  FeatureEffect
+  FeatureEffect,
+  Expand,
+  SnappingControls,
+  LayerList
 ) => {
   //*********************************
   // API KEY NEEDED FOR LOCATE BUTTON FUNCTIONALITY
@@ -58,15 +64,17 @@ require([
     },
     title: "Park Boundary",
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'",
-    renderer: boundRenderer
+    renderer: boundRenderer,
+    popupEnabled: false
   });
 
   // notes layer (user editable)
   const notes = new FeatureLayer({
     portalItem: {
-      id: "e1a2bc5263e64bbba407e356f818e55a"
+      id: "a30cfb26c55246e5a3193b02d0134de3"
     },
-    title: "Notes"
+    title: "Trail Notes",
+    defaultPopupTemplateEnabled: true
   });
 
   //*********************************
@@ -102,11 +110,14 @@ require([
   let notesEditConfig;
   /* access layer using forEach(); Editor layerInfo docs just show all this under the new Editor properties with out the forEach(), but that resulted in an empty editor element; this method is from one of the samples for multiple configurations within one widget)*/
   view.map.layers.forEach((notes) => {
-    if (notes.title === "Notes") {
+    if (notes.title === "Trail Notes") {
       notesEditConfig = {
         layer: notes,
         formTemplate: {
-          elements: [{ type: "field", fieldName: "Notes", label: "Notes" }]
+          elements: [
+            { type: "field", fieldName: "noteType", label: "Note Type" },
+            { type: "field", fieldName: "trailNotes", label: "Trail Notes" }
+          ]
         }
       };
     }
@@ -121,12 +132,16 @@ require([
     view: view,
     nextBasemap: "streets-vector"
   });
+  const layerList = new LayerList({
+    view: view
+  });
   const editor = new Editor({
     view: view,
-    layerInfos: [{ layer: notesEditConfig }],
+    layerInfos: [{ layer: notesEditConfig, updateEnabled: false }],
     // TO DO - this isn't eliminating the snapping options
-    snappingOptions: { enabled: false }
-    // widgetVisible: false
+    snappingOptions: { visible: false },
+    allowedWorkflows: ["create"]
+    // snappingControls: { visible: false }
   });
   const locate = new Locate({
     view: view,
@@ -140,13 +155,34 @@ require([
   });
 
   //*********************************
+  // ADD FUNCTIONALITY TO EXPAND EDITOR WINDOW
+  //*********************************
+  editExpand = new Expand({
+    expandIconClass: "esri-icon-plus",
+    expandTooltip: "Add a note",
+    view: view,
+    content: editor
+  });
+
+  //*********************************
+  // ADD FUNCTIONALITY TO EXPAND LayerList WIDGET
+  //*********************************
+  layersExpand = new Expand({
+    expandIconClass: "esri-icon-layer-list",
+    expandTooltip: "Layers",
+    view: view,
+    content: layerList
+  });
+
+  //*********************************
   // ADD ALL WIDGETS TO USER INTERFACE
   //*********************************
   view.ui.empty("top-left");
   view.ui.add(home, "top-right");
   //view.ui.add(zoom, "top-right");
+  view.ui.add(layersExpand, "top-left");
   view.ui.add(basemapToggle, "top-right");
-  view.ui.add(editor, "top-left");
+  view.ui.add(editExpand, "bottom-right");
   view.ui.add(locate, "bottom-left");
 
   //*********************************
@@ -166,6 +202,10 @@ require([
   //*********************************
   // VARIABLES FOR EACH TRAIL TYPE FILTER
   //*********************************
+
+  const noFilter = {
+    where: "CATEGORY='*'"
+  };
   const sharedFilter = {
     where: "CATEGORY='Shared-Use Equestrian'"
   };
@@ -184,6 +224,9 @@ require([
   document.getElementById("filterDiv").addEventListener("change", (event) => {
     let target = event.target;
     switch (target.id) {
+      case "noFilter":
+        filterTrails(noFilter);
+        break;
       case "shared":
         filterTrails(sharedFilter);
         break;
@@ -223,4 +266,14 @@ require([
       // excludedEffect: "opacity(95%)"
     });
   }
+
+  const snapElement = document.getElementsByClassName(
+    "esri-editor__panel-toolbar"
+  );
+  snapElement.innerHTML = "new text";
+
+  const editPanel = document.getElementsByClassName(
+    "esri-editor__panel-content__section"
+  );
+  editPanel.innerHTML = "BIg ol test";
 });
