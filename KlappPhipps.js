@@ -1,3 +1,5 @@
+let editor;
+
 require([
   "esri/config",
   "esri/Map",
@@ -128,7 +130,7 @@ require([
   const view = new MapView({
     map: map,
     container: "viewDiv",
-    zoom: 14,
+    zoom: 15,
     // scale: 9000,
     center: [-84.29, 30.5305]
     // CONSIDER SETTING EXTENT OR CONSTRAINTS
@@ -171,12 +173,13 @@ require([
   const layerList = new LayerList({
     view: view
   });
-  const editor = new Editor({
+  editor = new Editor({
     view: view,
     layerInfos: [{ layer: notesEditConfig, updateEnabled: false }],
     // TO DO - this isn't eliminating the snapping options
     snappingOptions: { visible: false },
-    allowedWorkflows: ["create"]
+    allowedWorkflows: ["create"],
+    visible: false
     // snappingControls: { visible: false }
   });
   const locate = new Locate({
@@ -214,11 +217,15 @@ require([
   // ADD FUNCTIONALITY TO EXPAND Editor WINDOW
   //*********************************
   editExpand = new Expand({
-    expandIconClass: "esri-icon-plus",
-    expandTooltip: "Add a note",
+    // expandIconClass: "esri-icon-edit",
+    expandIconClass: "purpleButterfly.ico",
+    expandTooltip: "Add a butterfly sighting!",
     view: view,
-    content: editor
+    content: editor,
+    id: "butterfly"
   });
+
+  editButton = document.getElementById("editButton");
 
   //*********************************
   // ADD FUNCTIONALITY TO EXPAND LayerList WIDGET
@@ -250,7 +257,9 @@ require([
   view.ui.add(layersExpand, "top-left");
   // view.ui.add(basemapToggle, "top-right");
   view.ui.add(basemapsExpand, "top-right");
-  view.ui.add(editExpand, "bottom-right");
+  // view.ui.add(editExpand, "bottom-right");
+  view.ui.add(editButton, "bottom-right");
+  view.ui.add(editor, "bottom-right");
   view.ui.add(locate, "bottom-left");
   view.ui.add(track, "bottom-left");
 
@@ -331,11 +340,12 @@ require([
   function filterTrails(featureFilter) {
     trailsLayerView.featureEffect = new FeatureEffect({
       filter: featureFilter,
-      includedEffect: "drop-shadow(3px, 3px, 3px, black)"
-      // excludedEffect: "opacity(95%)"
+      includedEffect: "drop-shadow(3px, 3px, 3px, black)",
+      excludedEffect: "opacity(50%)"
     });
   }
 
+  // tests to change text in the Edit Widget
   const snapElement = document.getElementsByClassName(
     "esri-editor__panel-toolbar"
   );
@@ -346,3 +356,29 @@ require([
   );
   editPanel.innerHTML = "BIg ol test";
 });
+
+// hide/unhide editor (outside of view object scope so accessible to index.html)
+function toggleEdit() {
+  editBtnStyle = document.getElementById("editButton").style;
+  if (editor.visible == false) {
+    editor.visible = true;
+    editBtnStyle.backgroundImage = "url(close-icon.png)";
+    editBtnStyle.width = "26px";
+    editBtnStyle.height = "26px";
+  } else {
+    editor.visible = false;
+    editBtnStyle.backgroundImage = "url(purpleButterfly.png)";
+    editBtnStyle.width = "50px";
+    editBtnStyle.height = "50px";
+  }
+}
+
+// const editFunction = function () {
+//   return function toggleEdit() {
+//     if (editor.visible == false) {
+//       editor.visible = true;
+//     } else {
+//       editor.visible = false;
+//     }
+//   };
+// };

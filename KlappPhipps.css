@@ -36,10 +36,35 @@ body {
 }
 
 #infoPanel_controls_content {
-  display: flex;
+  /* display: flex; */
   /* width: 50%; */
   padding: 5;
   background-color: whitesmoke;
+}
+
+/* #butterfly_controls_content {
+  background-image: url("purpleButterfly.ico");
+} */
+
+.esri-ui-bottom-right.esri-ui-corner
+  .esri-component.esri-expand.esri-widget.esri-expand--auto
+  .esri-expand__container
+  .esri-expand__panel
+  .esri-widget--button {
+  /* content: "test"; */
+  background-image: url("purpleButterfly.png");
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 100, 0.1);
+  border-color: black;
+  border-width: 5px;
+}
+
+#editButton {
+  background-image: url("purpleButterfly.png");
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
 }
 
 /* .esri-editor__update-features-action-buttons {
