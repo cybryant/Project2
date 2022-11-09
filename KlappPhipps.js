@@ -206,7 +206,7 @@ require([
   const view = new MapView({
     map: map,
     container: "viewDiv",
-    zoom: 15,
+    zoom: 14,
     // scale: 9000,
     center: [-84.29, 30.5305]
     // CONSIDER SETTING EXTENT OR CONSTRAINTS
