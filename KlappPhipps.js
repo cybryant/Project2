@@ -44,12 +44,76 @@ require([
   //*********************************
   // LAYER VARIABLES & SYMBOLOGY RENDERERS
   //*********************************
+
+  // renders the lines for the trail types
+  let commonPoperties = {
+    type: "simple-line",
+    width: "4px",
+    style: "solid"
+  };
+
+  let trailRenderer = {
+    type: "unique-value",
+    field: "CATEGORY",
+    uniqueValueInfos: [
+      {
+        value: "Hiking Access Trail",
+        label: "Hike Access Trail",
+        symbol: {
+          ...commonPoperties,
+          color: "red"
+        }
+      },
+      {
+        value: "Access Trail",
+        label: "Access Trail",
+        symbol: {
+          ...commonPoperties,
+          color: "blue"
+        }
+      },
+      {
+        value: "Hiking Trail",
+        label: "Hiking Trail",
+        symbol: {
+          ...commonPoperties,
+          color: "purple"
+        }
+      },
+      {
+        value: "Mtn Bike Trail",
+        label: "Mtn Bike Trail",
+        symbol: {
+          ...commonPoperties,
+          color: "chocolate"
+        }
+      },
+      {
+        value: "Access Road",
+        label: "Access Road",
+        symbol: {
+          ...commonPoperties,
+          color: "gray"
+        }
+      },
+      {
+        value: "Shared-Use Equestrian",
+        label: "Shared-Use Equestrian",
+        symbol: {
+          ...commonPoperties,
+          color: "forestgreen"
+        }
+      }
+    ]
+  };
+
   // trails layer
   const trails = new FeatureLayer({
     portalItem: {
       id: "f40494fb4e5d4a89991020c08a2b86e3"
     },
     title: "Trails",
+    renderer: trailRenderer,
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
   });
 
@@ -60,7 +124,7 @@ require([
       type: "simple-fill",
       // color: [144, 238, 144, 0.95],
       color: null,
-      outline: { width: 3, color: "orange" }
+      outline: { width: 1.5, color: "darkslategray" }
     }
   };
 
@@ -100,15 +164,27 @@ require([
     ]
   };
 
-  // notes layer (user editable)
+  // butterfly layer renderer
+  const butterflyRenderer = {
+    type: "simple",
+    symbol: {
+      type: "picture-marker",
+      url: "littleButterfly.png",
+      width: 25,
+      height: 25
+    }
+  };
+
+  // butterfly sighting layer (user editable)
   const notes = new FeatureLayer({
     portalItem: {
       id: "e1a2bc5263e64bbba407e356f818e55a"
     },
-    title: "Trail Notes",
+    title: "Butterfly sightings",
     popupTemplate: notesPopupTemplate,
     popupEnabled: true,
-    visible: false
+    visible: false,
+    renderer: butterflyRenderer
   });
 
   //*********************************
@@ -122,7 +198,7 @@ require([
     //       id: "4f2e99ba65e34bb8af49733d9778fb8e",
     //     },
     // basemap: "gray-vector",
-    basemap: "topo-vector",
+    basemap: "arcgis-midcentury",
     layers: [trails, boundary, contours, notes]
   });
 
@@ -282,16 +358,22 @@ require([
   //*********************************
 
   const noFilter = {
-    where: "CATEGORY='*'"
+    where:
+      // "CATEGORY='Shared-Use Equestrian' or CATEGORY='Hiking Trail' or CATEGORY='Hiking Access Trail' or CATEGORY='Mtn Bike Trail' or CATEGORY='Access Road' or CATEGORY='Access Trail'"
+      "CATEGORY in ('Shared-Use Equestrian', 'Hiking Trail', 'Hiking Access Trail', 'Mtn Bike Trail', 'Access Road', 'Access Trail')"
   };
   const sharedFilter = {
     where: "CATEGORY='Shared-Use Equestrian'"
   };
   const hikeFilter = {
-    where: "CATEGORY='Hiking Trail'"
+    where: "CATEGORY='Hiking Trail' or CATEGORY='Hiking Access Trail'"
   };
   const bikeFilter = {
     where: "CATEGORY='Mtn Bike Trail'"
+  };
+  const accessFilter = {
+    where:
+      "CATEGORY='Access Trail' or CATEGORY='Hiking Access Trail' or CATEGORY='Access Road'"
   };
 
   //*********************************
@@ -313,6 +395,9 @@ require([
         break;
       case "bike":
         filterTrails(bikeFilter);
+        break;
+      case "access":
+        filterTrails(accessFilter);
         break;
     }
   });
@@ -338,11 +423,19 @@ require([
   // make selected trail type symbol wider
   // function filterTrails(radioButton, featureFilter) {
   function filterTrails(featureFilter) {
-    trailsLayerView.featureEffect = new FeatureEffect({
-      filter: featureFilter,
-      includedEffect: "drop-shadow(3px, 3px, 3px, black)",
-      excludedEffect: "opacity(50%)"
-    });
+    if (featureFilter != noFilter) {
+      trailsLayerView.featureEffect = new FeatureEffect({
+        filter: featureFilter,
+        includedEffect: "drop-shadow(3px 3px 3px)",
+        excludedEffect: "opacity(35%) grayscale(25%)"
+      });
+    } else {
+      // this is the 'noFilter' reset so no effect is applied
+      trailsLayerView.featureEffect = new FeatureEffect({
+        filter: featureFilter,
+        excludedEffect: ""
+      });
+    }
   }
 
   // tests to change text in the Edit Widget
