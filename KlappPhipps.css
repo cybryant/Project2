@@ -4,7 +4,7 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family: Helvetica, Arial, sans-serif;
+  /* font-family: Helvetica, Arial, sans-serif; */
 }
 
 #titleDiv {
@@ -37,8 +37,8 @@ body {
 }
 
 #infoPanel_controls_content {
-  width: 300px;
-  padding: 0 15 12 15;
+  /* width: 300px; */
+  padding: 12 15 12 15;
 }
 
 /****************************************************** 
@@ -140,10 +140,10 @@ div.esri-expand__container.esri-expand__container--expanded {
 }
 
 /* nw */
-div.esri-expand__panel {
+/* div.esri-expand__panel {
   background-color: palegoldenrod;
   border-radius: 5px;
-}
+} */
 
 /* nw */
 div#layers_controls_content.esri-expand__content.esri-expand__content--expanded {
@@ -162,6 +162,9 @@ div.esri-layer-list.esri-widget.esri-widget--panel {
 div#infoPanel_controls_content.esri-expand__content.esri-expand__content--expanded {
   background-color: papayawhip;
   border-radius: 5px;
+  /* display: flex;
+  flex-direction: column; */
+  min-width: 300;
 }
 
 /* changes border radius but not colors */
@@ -240,4 +243,11 @@ div.esri-basemap-gallery.esri-widget.esri-widget--panel-height-only,
 div.esri-expand__content.esri-expand__content--expanded {
   background-color: papayawhip;
   border-radius: 5px;
+}
+
+/* adjust wierd info button lengthening on smaller screens */
+div.esri-component.esri-expand.esri-widget.esri-expand--auto {
+  background-color: transparent;
+  height: 32;
+  width: 32;
 }
