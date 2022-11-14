@@ -1,3 +1,6 @@
+// wetlands: 1966c4092d4841489cafa5365d053544
+// slopes (10-20%): d46627e5f4dd4ca298575156d18d483
+
 let editor;
 
 require([
@@ -16,7 +19,8 @@ require([
   "esri/widgets/support/SnappingControls",
   "esri/widgets/LayerList",
   "esri/widgets/Track",
-  "esri/widgets/BasemapGallery"
+  "esri/widgets/BasemapGallery",
+  "esri/widgets/Legend"
 ], (
   esriConfig,
   Map,
@@ -33,7 +37,8 @@ require([
   SnappingControls,
   LayerList,
   Track,
-  BasemapGallery
+  BasemapGallery,
+  Legend
 ) => {
   //*********************************
   // API KEY NEEDED FOR LOCATE BUTTON FUNCTIONALITY
@@ -146,7 +151,8 @@ require([
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'",
     renderer: boundRenderer,
     popupEnabled: false,
-    listMode: "hide"
+    listMode: "hide",
+    legendEnabled: false
   });
 
   const contours = new FeatureLayer({
@@ -155,7 +161,8 @@ require([
     },
     title: "Contours",
     popupEnabled: false,
-    visible: false
+    visible: false,
+    opacity: 0.5
   });
 
   const notesPopupTemplate = {
@@ -197,6 +204,27 @@ require([
     renderer: butterflyRenderer
   });
 
+  // slopes
+  const slopes = new FeatureLayer({
+    portalItem: {
+      id: "d46627e5f4dd4ca298575156d18d4834"
+    },
+    title: "Significant & Severe Slopes",
+    popupEnabled: false,
+    visible: false,
+    opacity: 0.4
+  });
+
+  // wetlands
+  const wetlands = new FeatureLayer({
+    portalItem: {
+      id: "1966c4092d4841489cafa5365d053544"
+    },
+    title: "Wetlands",
+    popupEnabled: false,
+    visible: false
+  });
+
   //*********************************
   // REQUIRED MAP OBJECTS
   //*********************************
@@ -209,7 +237,7 @@ require([
     //     },
     // basemap: "gray-vector",
     basemap: "arcgis-midcentury",
-    layers: [trails, boundary, contours, oakHammock, notes]
+    layers: [slopes, wetlands, boundary, contours, oakHammock, trails, notes]
   });
 
   // mapView
@@ -285,6 +313,10 @@ require([
     view: view
   });
 
+  const legend = new Legend({
+    view: view
+  });
+
   //*********************************
   // infoPanel
   //*********************************
@@ -292,7 +324,7 @@ require([
   const parkURL =
     "<a href='https://www.talgov.com/parks/parks-phipps'>park webpage</a>";
   const infoText = `<p>Elinor Klapp-Phipps Park is owned by the Northwest Florida Water Management District and managed by the City of Tallahassee. This app is not affiliated with either entity, but does use official, publicly availble GIS information for the trails. It is intended for free, public use.</p> 
-  <p>The park is known to host over a hundred different butterfly species. Users are welcome to add points where they have seen butterflies by clicking the layers button (3 lines in the upper left of the screen) and turn on the "Butterfly sighting" layer. Then click the butterfly in the bottom right of the screen to enter your sighting.</p>
+  <p>The park is known to host over a hundred different butterfly species. Users are welcome to add points where they have seen butterflies by clicking the layers button (3 lines in the upper left of the screen) and turn on the "Butterfly sighting" layer. Then click the butterfly in the bottom right of the screen & click the "New Feature" button.</p>
   <p>Check out the official City of Tallahassee ${parkURL} for more information and resources, including an infosheet for the 20 most commonly seen butterflies.</p>`;
 
   infoPanel = new Expand({
@@ -337,15 +369,26 @@ require([
   });
 
   //*********************************
+  // ADD FUNCTIONALITY TO EXPAND Legend WIDGET
+  //*********************************
+  legendExpand = new Expand({
+    expandIconClass: "esri-icon-legend",
+    expandTooltip: "Legend",
+    view: view,
+    content: legend
+  });
+
+  //*********************************
   // ADD ALL WIDGETS TO USER INTERFACE
   //*********************************
   view.ui.empty("top-left");
-  view.ui.add(home, "top-right");
   //view.ui.add(zoom, "top-right");
   view.ui.add(infoPanel, "top-left");
   view.ui.add(layersExpand, "top-left");
   // view.ui.add(basemapToggle, "top-right");
+  view.ui.add(home, "top-right");
   view.ui.add(basemapsExpand, "top-right");
+  view.ui.add(legendExpand, "top-right");
   // view.ui.add(editExpand, "bottom-right");
   view.ui.add(editButton, "bottom-right");
   view.ui.add(editor, "bottom-right");

@@ -22,7 +22,7 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  background-color: white;
+  background-color: papayawhip;
   color: black;
 }
 
@@ -38,7 +38,7 @@ body {
 
 #infoPanel_controls_content {
   /* width: 300px; */
-  padding: 15;
+  padding: 5 15 15 15;
 }
 
 /****************************************************** 
@@ -87,7 +87,7 @@ div.esri-editor__update-features-action-buttons {
 /*****************************************************
 Customizing the styling of the widgets
 *****************************************************/
-.esri-widget__table {
+/* .esri-widget__table {
   background-color: green;
   font-weight: 1;
   margin: 0 0 0.5rem 0;
@@ -112,14 +112,14 @@ h4.esri-widget__heading,
 h5.esri-widget__heading,
 h6.esri-widget__heading {
   font-size: 14px;
-  color: blueviolet;
+  color: blueviolet; */
 }
-esri-widget__anchor {
+/* esri-widget__anchor {
   background-color: green;
 }
 .esri-button {
   background-color: green;
-}
+} */
 
 /*****************************************************
 above from official docummentation did nothing; new try below
@@ -158,8 +158,19 @@ div.esri-layer-list.esri-widget.esri-widget--panel {
   border-radius: 5px;
 }
 
-/* WORKS; changes layer list styles; two elements overlaid so both included to avoid edges poking out */
+/* WORKS; changes layer list styles */
 div#infoPanel_controls_content.esri-expand__content.esri-expand__content--expanded {
+  background-color: papayawhip;
+  border-radius: 5px;
+  /* display: flex;
+  flex-direction: column; */
+  min-width: 300;
+  padding: 15;
+}
+
+/* WORKS; changes layer list styles */
+div.esri-legend.esri-widget.esri-widget--panel,
+div.esri-legend__service {
   background-color: papayawhip;
   border-radius: 5px;
   /* display: flex;
