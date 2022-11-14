@@ -8,7 +8,7 @@
     <title>Elinor Klapp-Phipps Park Trails</title>
     <link
       rel="stylesheet"
-      href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+      href="https://js.arcgis.com/4.25/esri/themes/light/main.css"
     />
     <link rel="stylesheet" type="text/css" href="KlappPhipps.css" />
 
@@ -21,7 +21,13 @@
     <!-- set up radio buttons -->
     <div id="filterDiv">
       <!-- shared-use trails -->
-      <input type="radio" id="noFilter" name="trailTypes" value="noFilter" />
+      <input
+        type="radio"
+        id="noFilter"
+        name="trailTypes"
+        value="noFilter"
+        checked
+      />
       <label for="shared">no filter</label>
       <input type="radio" id="shared" name="trailTypes" value="shared" />
       <label for="shared">shared</label>

@@ -112,9 +112,18 @@ require([
     portalItem: {
       id: "f40494fb4e5d4a89991020c08a2b86e3"
     },
-    title: "Trails",
+    title: "Trails by trail type",
     renderer: trailRenderer,
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
+  });
+
+  // Oak Haamock Loop layer
+  const oakHammock = new FeatureLayer({
+    portalItem: {
+      id: "f033ef0158ae4222b4d568143824fefe"
+    },
+    title: "Oak Hammock Loop"
+    // renderer: trailRenderer,
   });
 
   // renderer for park polygon layer
@@ -145,6 +154,7 @@ require([
       id: "07dfaf9dd2fd484ab4ed54bbbcf55a9f"
     },
     title: "Contours",
+    popupEnabled: false,
     visible: false
   });
 
@@ -199,7 +209,7 @@ require([
     //     },
     // basemap: "gray-vector",
     basemap: "arcgis-midcentury",
-    layers: [trails, boundary, contours, notes]
+    layers: [trails, boundary, contours, oakHammock, notes]
   });
 
   // mapView
@@ -250,6 +260,7 @@ require([
     view: view
   });
   editor = new Editor({
+    id: "editor",
     view: view,
     layerInfos: [{ layer: notesEditConfig, updateEnabled: false }],
     // TO DO - this isn't eliminating the snapping options
@@ -266,7 +277,8 @@ require([
     goToOverride: function (view, options) {
       options.target.scale = 1500;
       return view.goTo(options.target);
-    }
+    },
+    id: "locate"
   });
 
   const track = new Track({
@@ -279,11 +291,13 @@ require([
 
   const parkURL =
     "<a href='https://www.talgov.com/parks/parks-phipps'>park webpage</a>";
-  const infoText = `Check out the official City of Tallahassee ${parkURL}`;
+  const infoText = `<p>Elinor Klapp-Phipps Park is owned by the Northwest Florida Water Management District and managed by the City of Tallahassee. This app is not affiliated with either entity, but does use official, publicly availble GIS information for the trails. It is intended for free, public use.</p> 
+  <p>The park is known to host over a hundred different butterfly species. Users are welcome to add points where they have seen butterflies by clicking the layers button (3 lines to the left of this info box) and turn on the "Butterfly sighting" layer. Then click the butterfly in the bottom right of the screen to enter your sighting.</p>
+  <p>Check out the official City of Tallahassee ${parkURL} for more information and resources, including an infosheet for the 20 most commonly seen butterflies.</p>`;
 
   infoPanel = new Expand({
     expandIconClass: "esri-icon-description",
-    expandTooltip: "Add a note",
+    expandTooltip: "Information",
     view: view,
     content: infoText,
     id: "infoPanel"
@@ -293,8 +307,6 @@ require([
   // ADD FUNCTIONALITY TO EXPAND Editor WINDOW
   //*********************************
   editExpand = new Expand({
-    // expandIconClass: "esri-icon-edit",
-    expandIconClass: "purpleButterfly.ico",
     expandTooltip: "Add a butterfly sighting!",
     view: view,
     content: editor,
@@ -310,7 +322,8 @@ require([
     expandIconClass: "esri-icon-layer-list",
     expandTooltip: "Layers",
     view: view,
-    content: layerList
+    content: layerList,
+    id: "layers"
   });
 
   //*********************************
