@@ -513,13 +513,13 @@ function toggleEdit() {
   if (editor.visible == false) {
     editor.visible = true;
     editBtnStyle.backgroundImage = "url(close-icon.png)";
-    editBtnStyle.width = "26px";
-    editBtnStyle.height = "26px";
+    editBtnStyle.width = "24px";
+    editBtnStyle.height = "24px";
   } else {
     editor.visible = false;
     editBtnStyle.backgroundImage = "url(purpleButterfly.png)";
     editBtnStyle.width = "50px";
-    editBtnStyle.height = "50px";
+    editBtnStyle.height = "48px";
   }
 }
 
