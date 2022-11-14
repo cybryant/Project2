@@ -246,7 +246,8 @@ require([
     container: "viewDiv",
     zoom: 14,
     // scale: 9000,
-    center: [-84.29, 30.5305]
+    // center: [-84.29, 30.5305],
+    center: [-84.29, 30.531]
     // CONSIDER SETTING EXTENT OR CONSTRAINTS
     // ensures when going fullscreen left corners of extent & view container align
     //resizeAlign: "top-left",

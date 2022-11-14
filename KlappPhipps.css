@@ -24,6 +24,7 @@ body {
   align-items: center;
   background-color: papayawhip;
   color: black;
+  border-bottom: 1px solid cadetblue;
 }
 
 #viewDiv {
