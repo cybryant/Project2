@@ -220,7 +220,7 @@ require([
     title: "Butterfly Sightings",
     popupTemplate: butFlyPopupTemplate,
     popupEnabled: true,
-    visible: true,
+    visible: false,
     renderer: butterflyRenderer
   });
 
