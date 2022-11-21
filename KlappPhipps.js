@@ -20,7 +20,10 @@ require([
   "esri/widgets/LayerList",
   "esri/widgets/Track",
   "esri/widgets/BasemapGallery",
-  "esri/widgets/Legend"
+  "esri/widgets/Legend",
+  "esri/layers/support/LabelClass",
+  "esri/form/elements/inputs/DateTimePickerInput",
+  "esri/form/elements/FieldElement"
 ], (
   esriConfig,
   Map,
@@ -38,7 +41,10 @@ require([
   LayerList,
   Track,
   BasemapGallery,
-  Legend
+  Legend,
+  LabelClass,
+  DateTimePickerInput,
+  FieldElement
 ) => {
   //*********************************
   // API KEY NEEDED FOR LOCATE BUTTON FUNCTIONALITY
@@ -117,12 +123,12 @@ require([
     portalItem: {
       id: "f40494fb4e5d4a89991020c08a2b86e3"
     },
-    title: "Trails by trail type",
+    title: "All Trails by Trail Type",
     renderer: trailRenderer,
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
   });
 
-  // Oak Haamock Loop layer
+  // Oak Hammock Loop layer
   const oakHammock = new FeatureLayer({
     portalItem: {
       id: "f033ef0158ae4222b4d568143824fefe"
@@ -155,6 +161,7 @@ require([
     legendEnabled: false
   });
 
+  // contours layer
   const contours = new FeatureLayer({
     portalItem: {
       id: "07dfaf9dd2fd484ab4ed54bbbcf55a9f"
@@ -162,19 +169,32 @@ require([
     title: "Contours",
     popupEnabled: false,
     visible: false,
-    opacity: 0.5
+    opacity: 0.5,
+    legendEnabled: false
   });
 
-  const notesPopupTemplate = {
-    // autocasts as new PopupTemplate()
-    title: "Trail Notes",
+  // butterfly popup
+  const butFlyPopupTemplate = {
+    title: "Butterfly Sightings",
     content: [
       {
         type: "fields",
         fieldInfos: [
           {
-            fieldName: "Note",
+            fieldName: "Name",
+            label: "Name/Species"
+          },
+          {
+            fieldName: "Notes",
             label: "Note"
+          },
+          {
+            fieldName: "Month",
+            label: "Month"
+          },
+          {
+            fieldName: "thisYear",
+            label: "Year"
           }
         ]
       }
@@ -187,20 +207,20 @@ require([
     symbol: {
       type: "picture-marker",
       url: "littleButterfly.png",
-      width: 25,
-      height: 25
+      width: 24,
+      height: 24
     }
   };
 
   // butterfly sighting layer (user editable)
-  const notes = new FeatureLayer({
+  const butterflies = new FeatureLayer({
     portalItem: {
-      id: "e1a2bc5263e64bbba407e356f818e55a"
+      id: "eec32ec3376141f7b40d3f32f8949f88"
     },
-    title: "Butterfly sightings",
-    popupTemplate: notesPopupTemplate,
+    title: "Butterfly Sightings",
+    popupTemplate: butFlyPopupTemplate,
     popupEnabled: true,
-    visible: false,
+    visible: true,
     renderer: butterflyRenderer
   });
 
@@ -225,6 +245,42 @@ require([
     visible: false
   });
 
+  // renderer for trailheads
+  const trheadRenderer = {
+    type: "simple",
+    symbol: {
+      type: "simple-marker",
+      color: "darkslategray",
+      outline: null,
+      size: 6
+    }
+  };
+
+  const trheadLabelClass = new LabelClass({
+    labelExpressionInfo: {
+      expression: "$feature.name + TextFormatting.NewLine + $feature.address"
+    },
+    symbol: {
+      type: "text",
+      // font: { family: "Trebuchet MS", size: 10 },
+      // color: "rgba(2, 40, 145, 0.34)",
+      color: "gray",
+      haloSize: 1,
+      haloColor: "white"
+    }
+  });
+
+  // trailheads
+  const trailheads = new FeatureLayer({
+    portalItem: {
+      id: "90f624813d5f4e6583657f34fd459aca"
+    },
+    title: "Trailheads",
+    renderer: trheadRenderer,
+    labelsVisible: true,
+    labelingInfo: trheadLabelClass
+  });
+
   //*********************************
   // REQUIRED MAP OBJECTS
   //*********************************
@@ -237,7 +293,15 @@ require([
     //     },
     // basemap: "gray-vector",
     basemap: "arcgis-midcentury",
-    layers: [slopes, wetlands, boundary, contours, oakHammock, trails, notes]
+    layers: [
+      slopes,
+      wetlands,
+      boundary,
+      contours,
+      trails,
+      trailheads,
+      butterflies
+    ]
   });
 
   // mapView
@@ -256,32 +320,38 @@ require([
   //*********************************
   // CONFIGURE EDITOR WIDGET
   //*********************************
-  // variable to hold configuration parameters
-  let notesEditConfig;
-  /* access layer using forEach(); Editor layerInfo docs just show all this under the new Editor properties with out the forEach(), but that resulted in an empty editor element; this method is from one of the samples for multiple configurations within one widget)*/
-  view.map.layers.forEach((notes) => {
-    if (notes.title === "Trail Notes") {
-      notesEditConfig = {
-        layer: notes,
-        formTemplate: {
-          elements: [
-            // { type: "field", fieldName: "noteType", label: "Note Type" },
-            { type: "field", fieldName: "Note", label: "Note" }
-          ]
-        }
-      };
+
+  /* NOTE: Arcgis JS API will pull all editable layers & fields into the editor widget. Configuration is only needed if the editor form needs to be customized.*/
+
+  /* attempting to create a pull down menu to enter date; appears this is not yet possible per esri community post: https://community.esri.com/t5/arcgis-api-for-javascript-questions/how-to-use-datetimepickerinput-widget-in/m-p/1059943; leaving code in case this changes. */
+  // let dateElement = new FieldElement({
+  //   fieldName: "today",
+  //   label: "Today's Date",
+  //   input: {
+  //     // autocastable to DateTimePickerInput
+  //     type: "datetime-picker",
+  //     includeTime: false
+  //   }
+  // });
+
+  // variable to hold configurations for how fields appear inside the editor
+  let butFlyEditConfig = {
+    layer: butterflies,
+    formTemplate: {
+      elements: [
+        { type: "field", fieldName: "Name", label: "Name/Species" },
+        { type: "field", fieldName: "Notes", label: "Note" },
+        { type: "field", fieldName: "Month", label: "Month" },
+        { type: "field", fieldName: "thisYear", label: "Year" }
+      ]
     }
-  });
+  };
 
   //*********************************
   // CREATE WIDGETS
   //*********************************
   const home = new Home({ view: view });
-  //const zoom = new Zoom({ view: view });
-  // const basemapToggle = new BasemapToggle({
-  //   view: view,
-  //   nextBasemap: "streets-vector"
-  // });
+  //const zoom = new Zoom({ view: view }); // hiding for time being
   const basemapGallery = new BasemapGallery({
     view: view
   });
@@ -291,13 +361,15 @@ require([
   editor = new Editor({
     id: "editor",
     view: view,
-    layerInfos: [{ layer: notesEditConfig, updateEnabled: false }],
-    // TO DO - this isn't eliminating the snapping options
-    snappingOptions: { visible: false },
+    // 'layerInfo' property only needed if custom edit fields are desired in the future
+    layerInfos: [butFlyEditConfig],
     allowedWorkflows: ["create"],
+    visibleElements: {
+      snappingControls: false
+    },
     visible: false
-    // snappingControls: { visible: false }
   });
+
   const locate = new Locate({
     view: view,
     // set to false so it doesn't change rotation of the map
@@ -324,9 +396,10 @@ require([
 
   const parkURL =
     "<a href='https://www.talgov.com/parks/parks-phipps'>park webpage</a>";
-  const infoText = `<p>Elinor Klapp-Phipps Park is owned by the Northwest Florida Water Management District and managed by the City of Tallahassee. This app is not affiliated with either entity, but does use official, publicly availble GIS information for the trails. It is intended for free, public use.</p> 
+  const infoText = `Elinor Klapp-Phipps Park is owned by the Northwest Florida Water Management District and managed by the City of Tallahassee. This app is not affiliated with either entity, but does use official, publicly availble GIS information for the trails. It is intended for free, public use.
+  
   <p>The park is known to host over a hundred different butterfly species. Users are welcome to add points where they have seen butterflies by clicking the layers button (3 lines in the upper left of the screen) and turn on the "Butterfly sighting" layer. Then click the butterfly in the bottom right of the screen & click the "New Feature" button.</p>
-  <p>Check out the official City of Tallahassee ${parkURL} for more information and resources, including an infosheet for the 20 most commonly seen butterflies.</p>`;
+  <p>Check out the official City of Tallahassee ${parkURL} for more information and resources, including an infosheet for the 28 most commonly seen butterflies.</p>`;
 
   infoPanel = new Expand({
     expandIconClass: "esri-icon-description",
@@ -334,16 +407,6 @@ require([
     view: view,
     content: infoText,
     id: "infoPanel"
-  });
-
-  //*********************************
-  // ADD FUNCTIONALITY TO EXPAND Editor WINDOW
-  //*********************************
-  editExpand = new Expand({
-    expandTooltip: "Add a butterfly sighting!",
-    view: view,
-    content: editor,
-    id: "butterfly"
   });
 
   editButton = document.getElementById("editButton");
@@ -383,14 +446,12 @@ require([
   // ADD ALL WIDGETS TO USER INTERFACE
   //*********************************
   view.ui.empty("top-left");
-  //view.ui.add(zoom, "top-right");
+  //view.ui.add(zoom, "top-right"); // hiding for time being
   view.ui.add(infoPanel, "top-left");
   view.ui.add(layersExpand, "top-left");
-  // view.ui.add(basemapToggle, "top-right");
   view.ui.add(home, "top-right");
   view.ui.add(basemapsExpand, "top-right");
   view.ui.add(legendExpand, "top-right");
-  // view.ui.add(editExpand, "bottom-right");
   view.ui.add(editButton, "bottom-right");
   view.ui.add(editor, "bottom-right");
   view.ui.add(locate, "bottom-left");

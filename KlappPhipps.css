@@ -39,7 +39,7 @@ body {
 
 #infoPanel_controls_content {
   /* width: 300px; */
-  padding: 5 15 15 15;
+  padding: 0 15 15 15;
 }
 
 /****************************************************** 
@@ -67,9 +67,10 @@ div.esri-editor__scroller.esri-editor__panel-content > div:first-child {
 
 /*****************************************************
 Adjusting the Editor layout to hide unnecessary fields
+NOTE: Doesn't appear necessary with API 4.25 update; removed via "editor" properties
 *****************************************************/
 
-div.esri-editor__scroller > div:first-child h5 {
+/* div.esri-editor__scroller > div:first-child h5 {
   display: none;
 }
 
@@ -83,7 +84,7 @@ div.esri-item-list__filter-container--sticky {
 
 div.esri-editor__update-features-action-buttons {
   display: none;
-}
+} */
 
 /*****************************************************
 Customizing the styling of the widgets
@@ -263,4 +264,11 @@ div.esri-component.esri-expand.esri-widget.esri-expand--auto {
   background-color: transparent;
   height: 32;
   width: 32;
+}
+
+/* adjust editor widget background color; new for 4.25 */
+div.esri-editor__panel-content,
+div.esri-feature-form.esri-widget.esri-widget--panel {
+  background-color: papayawhip;
+  border-radius: 5px;
 }
