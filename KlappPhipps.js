@@ -375,10 +375,10 @@ require([
     // set to false so it doesn't change rotation of the map
     useHeadingEnabled: false,
     // set custom zoom functionality
-    goToOverride: function (view, options) {
-      options.target.scale = 1500;
-      return view.goTo(options.target);
-    },
+    // goToOverride: function (view, options) {
+    //   options.target.scale = 1500;
+    //   return view.goTo(options.target);
+    // },
     id: "locate"
   });
 
