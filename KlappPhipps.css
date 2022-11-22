@@ -4,7 +4,6 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  /* font-family: Helvetica, Arial, sans-serif; */
 }
 
 #titleDiv {
@@ -34,7 +33,6 @@ body {
   width: 100%;
   flex: 1 1 auto;
   order: 1;
-  /* overflow: hidden; */
 }
 
 #infoPanel_controls_content {
@@ -42,32 +40,15 @@ body {
   padding: 0 15 15 15;
 }
 
-/****************************************************** 
-JUST KEEPING FOR FUTURE REFERENCE
-******************************************************/
-/* make edit expand button the butterfly icon */
-/* .esri-ui-bottom-right.esri-ui-corner
-  .esri-component.esri-expand.esri-widget.esri-expand--auto
-  .esri-expand__container
-  .esri-expand__panel
-  .esri-widget--button {
-  background-image: url("purpleButterfly.png");
-  width: 50px;
-  height: 50px;
-  background-color: rgba(0, 0, 100, 0.1);
-  border-color: black;
-  border-width: 5px;
-} */
-/*****************************************************/
-
 /* top space on first panel, holds directions & form on subsequent panels */
+/* may  no longer be needed with API 4.25; keeping until tested */
 div.esri-editor__scroller.esri-editor__panel-content > div:first-child {
   display: flex;
 }
 
 /*****************************************************
 Adjusting the Editor layout to hide unnecessary fields
-NOTE: Doesn't appear necessary with API 4.25 update; removed via "editor" properties
+NOTE: Doesn't appear necessary with API 4.25 update; extra elements can now bw removed via "editor" properties
 *****************************************************/
 
 /* div.esri-editor__scroller > div:first-child h5 {
@@ -89,76 +70,6 @@ div.esri-editor__update-features-action-buttons {
 /*****************************************************
 Customizing the styling of the widgets
 *****************************************************/
-/* .esri-widget__table {
-  background-color: green;
-  font-weight: 1;
-  margin: 0 0 0.5rem 0;
-}
-
-.esri-widget__heading {
-  background-color: green;
-  font-weight: 1;
-  margin: 0 0 0.5rem 0;
-}
-h1.esri-widget__heading {
-  background-color: green;
-  font-size: 20px;
-  color: blueviolet;
-}
-h2.esri-widget__heading {
-  font-size: 14px;
-  color: blueviolet;
-}
-h3.esri-widget__heading,
-h4.esri-widget__heading,
-h5.esri-widget__heading,
-h6.esri-widget__heading {
-  font-size: 14px;
-  color: blueviolet; */
-}
-/* esri-widget__anchor {
-  background-color: green;
-}
-.esri-button {
-  background-color: green;
-} */
-
-/*****************************************************
-above from official docummentation did nothing; new try below
-*****************************************************/
-/* isn't working */
-#layers {
-  background-color: aquamarine !important;
-}
-
-/* nw */
-div.esri-widget--esri-expand__panel {
-  background-color: aquamarine;
-}
-
-/* nw */
-div.esri-expand__container.esri-expand__container--expanded {
-  background-color: aquamarine;
-}
-
-/* nw */
-/* div.esri-expand__panel {
-  background-color: palegoldenrod;
-  border-radius: 5px;
-} */
-
-/* nw */
-div#layers_controls_content.esri-expand__content.esri-expand__content--expanded {
-  background-color: papayawhip;
-  border-radius: 5px;
-}
-
-/* WORKS changes layer list styles; two elements overlaid so both included to avoid edges poking out */
-div#layers_controls_content.esri-expand__content.esri-expand__content--expanded,
-div.esri-layer-list.esri-widget.esri-widget--panel {
-  background-color: papayawhip;
-  border-radius: 5px;
-}
 
 /* WORKS; changes layer list styles */
 div#infoPanel_controls_content.esri-expand__content.esri-expand__content--expanded {
@@ -187,31 +98,6 @@ div.esri-component.esri-editor.esri-widget.esri-widget--panel {
   border-radius: 5px;
 }
 
-/* nw */
-header.header {
-  background-color: papayawhip !important;
-}
-
-/* nw */
-div.header-content {
-  background-color: papayawhip !important;
-}
-
-/* nw */
-article.container {
-  background-color: peachpuff;
-}
-
-/* nw */
-calcite-flow {
-  background-color: peachpuff;
-}
-
-/* nw */
-calcite-panel {
-  background-color: peachpuff;
-}
-
 div.frame.frame--retreating {
   background-color: papayawhip;
 }
@@ -236,21 +122,6 @@ div.esri-widget--button:hover {
   background-color: palegoldenrod;
   border-radius: 5px;
 }
-/* make edit expand button the butterfly icon */
-/* same as above, but  much simpler since I just gave it an ID in the constructor */
-#editButton {
-  background-image: url("purpleButterfly.png");
-  background-color: papayawhip;
-  border-radius: 5px;
-  width: 50px;
-  height: 48px;
-  border: 0px;
- }
-
-#editButton:hover {
-  background-color: palegoldenrod;
-  border-radius: 5px;
-}
 
 /* basemap widget styling */
 div.esri-basemap-gallery.esri-widget.esri-widget--panel-height-only,
@@ -272,3 +143,40 @@ div.esri-feature-form.esri-widget.esri-widget--panel {
   background-color: papayawhip;
   border-radius: 5px;
 }
+
+/*******************************************
+Edit Button styling
+********************************************/
+/* make edit expand button the butterfly icon */
+/* same as below commented out version, but  much simpler since I just gave it an ID in the constructor */
+#editButton {
+  background-image: url("purpleButterfly.png");
+  background-color: papayawhip;
+  border-radius: 5px;
+  width: 50px;
+  height: 48px;
+  border: 0px;
+}
+
+#editButton:hover {
+  background-color: palegoldenrod;
+  border-radius: 5px;
+}
+
+/****************************************************** 
+THIS WORKED BUT CHANGED TO HTML BUTTON RATHER THAN ESRI WIDGET; KEEPING FOR FUTURE REFERENCE
+******************************************************/
+/* make edit expand button the butterfly icon */
+/* .esri-ui-bottom-right.esri-ui-corner
+  .esri-component.esri-expand.esri-widget.esri-expand--auto
+  .esri-expand__container
+  .esri-expand__panel
+  .esri-widget--button {
+  background-image: url("purpleButterfly.png");
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 100, 0.1);
+  border-color: black;
+  border-width: 5px;
+} */
+/*****************************************************/

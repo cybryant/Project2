@@ -1,6 +1,4 @@
-// wetlands: 1966c4092d4841489cafa5365d053544
-// slopes (10-20%): d46627e5f4dd4ca298575156d18d483
-
+// need a global variable for the editor button; probably a better way to do this & will update later
 let editor;
 
 require([
@@ -320,7 +318,6 @@ require([
   //*********************************
   // CONFIGURE EDITOR WIDGET
   //*********************************
-
   /* NOTE: Arcgis JS API will pull all editable layers & fields into the editor widget. Configuration is only needed if the editor form needs to be customized.*/
 
   /* attempting to create a pull down menu to enter date; appears this is not yet possible per esri community post: https://community.esri.com/t5/arcgis-api-for-javascript-questions/how-to-use-datetimepickerinput-widget-in/m-p/1059943; leaving code in case this changes. */
@@ -375,10 +372,10 @@ require([
     // set to false so it doesn't change rotation of the map
     useHeadingEnabled: false,
     // set custom zoom functionality
-    // goToOverride: function (view, options) {
-    //   options.target.scale = 1500;
-    //   return view.goTo(options.target);
-    // },
+    goToOverride: function (view, options) {
+      options.target.scale = 1500;
+      return view.goTo(options.target);
+    },
     id: "locate"
   });
 
@@ -391,7 +388,7 @@ require([
   });
 
   //*********************************
-  // infoPanel
+  // create infoPanel
   //*********************************
 
   const parkURL =
@@ -521,7 +518,7 @@ require([
   });
 
   //*********************************
-  //DRAFT (REFERENCE) EVENT LISTENERS FOR RADIO BUTTONS
+  //(REFERENCE ONLY) ANOTHER WAY FOR RADIO BUTTON EVENT LISTENERS
   //*********************************
 
   // create variables for radio buttons
@@ -555,17 +552,6 @@ require([
       });
     }
   }
-
-  // tests to change text in the Edit Widget
-  const snapElement = document.getElementsByClassName(
-    "esri-editor__panel-toolbar"
-  );
-  snapElement.innerHTML = "new text";
-
-  const editPanel = document.getElementsByClassName(
-    "esri-editor__panel-content__section"
-  );
-  editPanel.innerHTML = "BIg ol test";
 });
 
 // hide/unhide editor (outside of view object scope so accessible to index.html)
@@ -583,13 +569,3 @@ function toggleEdit() {
     editBtnStyle.height = "48px";
   }
 }
-
-// const editFunction = function () {
-//   return function toggleEdit() {
-//     if (editor.visible == false) {
-//       editor.visible = true;
-//     } else {
-//       editor.visible = false;
-//     }
-//   };
-// };
