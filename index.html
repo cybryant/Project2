@@ -18,9 +18,12 @@
   <body>
     <div id="titleDiv">Elinor Klapp-Phipps Park Trails</div>
 
-    <!-- set up radio buttons -->
+    <!-- -------------------- -->
+    <!-- SET UP RADIO BUTTONS -->
+    <!-- -------------------- -->
     <div id="filterDiv">
-      <!-- shared-use trails -->
+      <i>Filter trails:</i>
+      <!-- no filter -->
       <input
         type="radio"
         id="noFilter"
@@ -28,7 +31,8 @@
         value="noFilter"
         checked
       />
-      <label for="shared">no filter</label>
+      <label for="noFilter">none</label>
+      <!-- shared use trails -->
       <input type="radio" id="shared" name="trailTypes" value="shared" />
       <label for="shared">shared</label>
       <!-- hiking trails -->

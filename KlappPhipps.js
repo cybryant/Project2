@@ -21,7 +21,8 @@ require([
   "esri/widgets/Legend",
   "esri/layers/support/LabelClass",
   "esri/form/elements/inputs/DateTimePickerInput",
-  "esri/form/elements/FieldElement"
+  "esri/form/elements/FieldElement",
+  "esri/layers/GroupLayer"
 ], (
   esriConfig,
   Map,
@@ -42,7 +43,8 @@ require([
   Legend,
   LabelClass,
   DateTimePickerInput,
-  FieldElement
+  FieldElement,
+  GroupLayer
 ) => {
   //*********************************
   // API KEY NEEDED FOR LOCATE BUTTON FUNCTIONALITY
@@ -55,7 +57,7 @@ require([
   //*********************************
 
   // renders the lines for the trail types
-  let commonPoperties = {
+  let commonProperties = {
     type: "simple-line",
     width: "4px",
     style: "solid"
@@ -69,7 +71,7 @@ require([
         value: "Hiking Access Trail",
         label: "Hike Access Trail",
         symbol: {
-          ...commonPoperties,
+          ...commonProperties,
           color: "red"
         }
       },
@@ -77,7 +79,7 @@ require([
         value: "Access Trail",
         label: "Access Trail",
         symbol: {
-          ...commonPoperties,
+          ...commonProperties,
           color: "blue"
         }
       },
@@ -85,7 +87,7 @@ require([
         value: "Hiking Trail",
         label: "Hiking Trail",
         symbol: {
-          ...commonPoperties,
+          ...commonProperties,
           color: "purple"
         }
       },
@@ -93,7 +95,7 @@ require([
         value: "Mtn Bike Trail",
         label: "Mtn Bike Trail",
         symbol: {
-          ...commonPoperties,
+          ...commonProperties,
           color: "chocolate"
         }
       },
@@ -101,7 +103,7 @@ require([
         value: "Access Road",
         label: "Access Road",
         symbol: {
-          ...commonPoperties,
+          ...commonProperties,
           color: "gray"
         }
       },
@@ -109,7 +111,7 @@ require([
         value: "Shared-Use Equestrian",
         label: "Shared-Use Equestrian",
         symbol: {
-          ...commonPoperties,
+          ...commonProperties,
           color: "forestgreen"
         }
       }
@@ -126,14 +128,104 @@ require([
     definitionExpression: "PARKNAME = 'Elinor Klapp-Phipps Park'"
   });
 
-  // Oak Hammock Loop layer
-  const oakHammock = new FeatureLayer({
+  //**********************
+  //   Oak Hammock Loop
+  //**********************
+
+  // renderer for Oak Hammock Loop
+  const loopTrailRenderer = {
+    type: "simple",
+    symbol: {
+      type: "simple-line",
+      color: "black",
+      width: 4,
+      style: "short-dot"
+    }
+  };
+
+  // layer for Oak Hammock Loop
+  const oakHammockLp = new FeatureLayer({
     portalItem: {
-      id: "f033ef0158ae4222b4d568143824fefe"
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
     },
-    title: "Oak Hammock Loop"
-    // renderer: trailRenderer,
+    title: "Oak Hammock Loop (2.7 miles)",
+    renderer: loopTrailRenderer,
+    definitionExpression: "LOOPNAME = 'Oak Hammock Loop'"
   });
+
+  //**********************
+  //   Swamp Forest Loop
+  //**********************
+
+  // renderer for Swamp Forest Loop
+  // const swampForestRenderer = {
+  //   type: "simple",
+  //   symbol: {
+  //     type: "simple-line",
+  //     color: "black",
+  //     width: 4,
+  //     style: "short-dot"
+  //   }
+  // };
+
+  // layer for Oak Hammock Loop
+  const swampForestLp = new FeatureLayer({
+    portalItem: {
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
+    },
+    title: "Swamp Forest Loop (1.65 miles)",
+    renderer: loopTrailRenderer,
+    definitionExpression: "LOOPNAME = 'Swamp Forest Loop'"
+  });
+
+  // layer for Coon Bottom Loop
+  const coonBottomLp = new FeatureLayer({
+    portalItem: {
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
+    },
+    title: "Coon Bottom Loop (1.38 miles)",
+    renderer: loopTrailRenderer,
+    definitionExpression: "LOOPNAME = 'Coon Bottom Loop'"
+  });
+
+  // layer for Creek Forest Trail
+  const creekForestTrl = new FeatureLayer({
+    portalItem: {
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
+    },
+    title: "Creek Forest Trail (.73 miles)",
+    renderer: loopTrailRenderer,
+    definitionExpression: "LOOPNAME = 'Creek Forest Trail'"
+  });
+
+  // layer for Big Tree Cutoff
+  const bigTreeCutoff = new FeatureLayer({
+    portalItem: {
+      id: "f40494fb4e5d4a89991020c08a2b86e3"
+    },
+    title: "Big Tree Cutoff (.18 miles)",
+    renderer: loopTrailRenderer,
+    definitionExpression: "LOOPNAME = 'Big Tree Cutoff'"
+  });
+
+  //**********************
+  //   Group Layer for trail loops
+  //**********************
+  const loopGroupLayer = new GroupLayer({
+    layers: [
+      oakHammockLp,
+      swampForestLp,
+      coonBottomLp,
+      creekForestTrl,
+      bigTreeCutoff
+    ],
+    title: "Loop Trails",
+    visible: false
+  });
+
+  //**********************
+  //   Park Boundaries
+  //**********************
 
   // renderer for park polygon layer
   const boundRenderer = {
@@ -250,7 +342,7 @@ require([
       type: "simple-marker",
       color: "darkslategray",
       outline: null,
-      size: 6
+      size: 8
     }
   };
 
@@ -292,13 +384,14 @@ require([
     // basemap: "gray-vector",
     basemap: "arcgis-midcentury",
     layers: [
+      butterflies,
+      contours,
       slopes,
       wetlands,
-      boundary,
-      contours,
       trails,
       trailheads,
-      butterflies
+      loopGroupLayer,
+      boundary
     ]
   });
 
@@ -474,7 +567,6 @@ require([
 
   const noFilter = {
     where:
-      // "CATEGORY='Shared-Use Equestrian' or CATEGORY='Hiking Trail' or CATEGORY='Hiking Access Trail' or CATEGORY='Mtn Bike Trail' or CATEGORY='Access Road' or CATEGORY='Access Trail'"
       "CATEGORY in ('Shared-Use Equestrian', 'Hiking Trail', 'Hiking Access Trail', 'Mtn Bike Trail', 'Access Road', 'Access Trail')"
   };
   const sharedFilter = {
@@ -494,8 +586,7 @@ require([
   //*********************************
   // EVENT LISTENER FOR RADIO BUTTONS
   //*********************************
-  //TO DO - set radio buttons initial state to unchecked
-  // Chrome sets them that way, but some browsers (i.e., Firefox) appear to autocheck the first one
+  // be sure to set initial state of radio buttons in index.html
   document.getElementById("filterDiv").addEventListener("change", (event) => {
     let target = event.target;
     switch (target.id) {
