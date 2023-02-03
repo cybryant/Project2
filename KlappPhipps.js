@@ -56,6 +56,17 @@ require([
   // LAYER VARIABLES & SYMBOLOGY RENDERERS
   //*********************************
 
+  // parameters to include in trail symbology renderers to make them scale aware
+  const sizeVisualVar = {
+    type: "size",
+    valueExpression: "$view.scale",
+    stops: [
+      { size: 12, value: 2000 },
+      { size: 8, value: 4500 },
+      { size: 4, value: 9000 }
+    ]
+  };
+
   // renders the lines for the trail types
   let commonProperties = {
     type: "simple-line",
@@ -66,6 +77,7 @@ require([
   let trailRenderer = {
     type: "unique-value",
     field: "CATEGORY",
+    visualVariables: [sizeVisualVar],
     uniqueValueInfos: [
       {
         value: "Hiking Access Trail",
@@ -88,7 +100,7 @@ require([
         label: "Hiking Trail",
         symbol: {
           ...commonProperties,
-          color: "purple"
+          color: "#B65FCF"
         }
       },
       {
@@ -137,10 +149,11 @@ require([
     type: "simple",
     symbol: {
       type: "simple-line",
-      color: "black",
+      color: "Maroon",
       width: 4,
       style: "short-dot"
-    }
+    },
+    visualVariables: [sizeVisualVar]
   };
 
   // layer for Oak Hammock Loop
@@ -352,7 +365,7 @@ require([
     },
     symbol: {
       type: "text",
-      // font: { family: "Trebuchet MS", size: 10 },
+      font: { family: "Trebuchet MS", size: 10.5 },
       // color: "rgba(2, 40, 145, 0.34)",
       color: "gray",
       haloSize: 1,
